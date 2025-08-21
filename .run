@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Configuration pour lancer Lectio Divina IA
+echo "🚀 Lancement de Lectio Divina IA..."
+
+# Vérifier que Python et les dépendances sont installés
+if ! python3 -c "import streamlit" 2>/dev/null; then
+    echo "❌ Streamlit n'est pas installé. Installation..."
+    pip3 install --break-system-packages streamlit python-dotenv openai
+fi
+
+# Créer le fichier .env s'il n'existe pas
+if [ ! -f .env ]; then
+    echo "📝 Création du fichier .env..."
+    cp .env.example .env
+    echo "⚠️  N'oubliez pas de configurer votre clé OpenAI dans .env"
+fi
+
+# Vérifier que les répertoires de données existent
+mkdir -p data/bible data/valtorta
+
+# Lancer l'application Streamlit
+echo "🌐 Lancement de l'application sur http://localhost:8501"
+echo "📱 Interface web accessible dans votre navigateur"
+echo ""
+echo "Pour arrêter l'application: Ctrl+C"
+echo ""
+
+# Configuration pour l'accès web
+export STREAMLIT_SERVER_PORT=8501
+export STREAMLIT_SERVER_ADDRESS=0.0.0.0
+export STREAMLIT_SERVER_HEADLESS=true
+export STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+
+# Lancer l'application
+python3 -m streamlit run app.py \
+    --server.port=8501 \
+    --server.address=0.0.0.0 \
+    --server.headless=true \
+    --browser.gatherUsageStats=false
